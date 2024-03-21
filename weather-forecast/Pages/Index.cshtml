@@ -1,0 +1,56 @@
+﻿@page
+@using weather_forecast.Models
+@model IndexModel
+@{
+    ViewData["Title"] = "Previsão do Tempo";
+}
+
+<form method="post">
+    <div class="w-50 p-1">
+        <select class="fstdropdown-select" name="slcMunicipio">
+            <option selected="">Selecione um município</option>
+
+            @if (Model.municipios != null)
+            {
+                foreach (Municipios municipios in Model.municipios)
+                {
+                    <option value="@municipios.codigo_ibge">@municipios.nome_uf</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="p-1">
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </div>
+</form>
+
+<p />
+
+@if (Model.acessouApi is true)
+{
+    <h4>@Model.nomeUf</h4>
+    <table class="table table-striped table-light">
+        <thead>
+            <tr class="table-primary">
+                <th scope="col">Hora</th>
+                <th scope="col">Temperatura</th>
+                <th scope="col">Sensação Térmica</th>
+                <th scope="col">Precipitação</th>
+                <th scope="col">Umidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < 24; i++)
+            {
+                <tr>
+                    <th scope="row">@Model.climaResponse.hourly.time[i].Substring(11)</th>
+                    <td>@Model.climaResponse.hourly.temperature_2m[i]@Model.climaResponse.hourly_units.temperature_2m</td>
+                    <td>@Model.climaResponse.hourly.apparent_temperature[i]@Model.climaResponse.hourly_units.apparent_temperature</td>
+                    <td>@Model.climaResponse.hourly.precipitation[i]@Model.climaResponse.hourly_units.precipitation</td>
+                    <td>@Model.climaResponse.hourly.relative_humidity_2m[i]@Model.climaResponse.hourly_units.relative_humidity_2m</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
